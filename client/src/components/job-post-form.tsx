@@ -25,7 +25,7 @@ const JobPostForm = ({ onSubmit }: Props) => {
   const { data: jobTypesResp } = trpc.getJobTypes.useQuery();
   const jobTypesList = jobTypesResp?.data ?? [];
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     companyName: "",
     description:

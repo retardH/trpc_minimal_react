@@ -1,12 +1,18 @@
 import { inferAsyncReturnType, initTRPC } from "@trpc/server";
-import { createContext } from "./app";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import prisma from "./db";
+
+// create context function for trpc at runtime
+const createContext = ({
+  req,
+  res,
+}: trpcExpress.CreateExpressContextOptions) => ({ req, res, prisma });
 
 type Context = inferAsyncReturnType<typeof createContext>;
 
-const t = initTRPC.context<Context>().create();
-const router = t.router;
-const publicProcedure = t.procedure;
-const mergeRouters = t.mergeRouters;
+const trpc = initTRPC.context<Context>().create();
+const router = trpc.router;
+const publicProcedure = trpc.procedure; // base procedure
+const mergeRouters = trpc.mergeRouters;
 
-export { router, publicProcedure, mergeRouters };
-// export type { Context };
+export { router, publicProcedure, mergeRouters, createContext };

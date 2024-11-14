@@ -19,7 +19,7 @@ const jobPostRouter = router({
     const allJobPosts = await ctx.prisma.jobPost.findMany();
 
     return {
-      data: allJobPosts,
+      list: allJobPosts,
       message: "Job posts retrieved successfully",
     };
   }),
@@ -53,7 +53,12 @@ const jobPostRouter = router({
       };
     }),
   deleteJobPost: publicProcedure
-    .input(z.string())
+    .input((input) => {
+      if (typeof input !== "string") {
+        throw new Error("Invalid input type");
+      }
+      return input;
+    })
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.jobPost.delete({ where: { id: input } });
 
